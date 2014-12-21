@@ -26,37 +26,81 @@
 
   var slice = Array.prototype.slice;
 
-  var BMC = Backbone.Model.extend({
+  var BackboneModelComposite = Backbone.Model.extend({
 
+    // Subclasses define child models using a `childModels` hash.
+    // 
+    // This may be either an object or function returning an object,
+    // which has keys defining the how the child model is referenced on
+    // the parent instance, and values which are the child instance constructors.
+    //
+    // At a minimum, child instances should implement the Backbone.Events API.
+    //
+    // e.g.
+    // 
+    // var ParentModel = Backbone.ModelComposite.extend({
+    //   childModels: {
+    //     firstChild: Backbone.Model,
+    //     secondChild: OtherConstructor
+    //   }
+    //   
+    //   //...
+    // });
+    //
+    // var model = new ParentModel({
+    //   firstChild: {
+    //     a: 'abc',
+    //     b: 2
+    //   },
+    //   secondChild: {}
+    //   x: 3 //, ...
+    // });
+    //
+    // model.firstChild.get('a'); // <-- 'abc'
+    // model.secondChild.set('hello', 'world');
+    // model.toJSON(); // <-- {firstChild: {a: 'abc', b: 2}, secondChild: {hello: 'world'}, x: 3, ...}
+    //
+    childModels: {},
+
+    // Override the constructor, creating child models
     constructor: function(attrs, options) {
       Backbone.Model.apply(this, arguments);
-      options = options || {};
       this._createChildren(options);
     },
 
-    childModels: {},
-    
-    toJSON: function (options) {
+    // Include child models in this model's JSON representation. 
+    // Child models may be omitted by passing a truthy value to 
+    // `excludeChildModels` in the options argument
+    toJSON: function(options) {
       options = options || {};
       var json = Backbone.Model.prototype.toJSON.apply(this, arguments);
-      
+
       if (!options.excludeChildModels) {
         var childModelsHash = _.result(this, 'childModels');
         var keys = _.keys(childModelsHash);
-      
-        _.each(keys, function (key){
-          json[key]= this[key].toJSON(options);
+
+        _.each(keys, function(key) {
+          json[key] = this[key].toJSON(options);
         }, this);
       }
-      
+
       return json;
     },
 
+    // Create child models, attaching the child to this[key], using 
+    // the key from the childModels hash. That key is also used pass 
+    // attributes from the parent attributes to the child's constructor.
+    // 
+    // By default, the child attributes are removed from the parent's
+    // attributes hash. This behavior can be prevented by passing 
+    // a truthy value for `preserveChildAttributes` to the parent's 
+    // options argument.
     _createChildren: function(options) {
+      options = options || {};
       var childModelsHash = _.result(this, 'childModels');
-      
+
       _.each(childModelsHash, function(ModelClass, key) {
-        var childModel = new ModelClass(this.attributes[key]);
+        var childModel = new ModelClass(this.get(key));
         this._propagateChildEvents(childModel, key);
         this[key] = childModel;
 
@@ -66,6 +110,22 @@
       }, this);
     },
 
+    // All child events are also broadcast by the parent object. 
+    // Listeners may be attached to the parent, prefixing 
+    // the event with the child's key from the childModels result
+    // hash.
+    //    
+    // var ParentModel = Backbone.ModelComposite.extend({
+    //   childModels: {
+    //     firstChild: Backbone.Model
+    //   }
+    // });
+    //
+    // var model = new ParentModel();
+    // var handler = function (){};
+    // model.on('firstChild:change', handler);
+    // model.firstChild.set('a', 123); // handler called
+    //
     _propagateChildEvents: function(childModel, key) {
       this.listenTo(childModel, 'all', function() {
         var model = this;
@@ -79,8 +139,8 @@
 
   });
 
-  BMC.VERSION = "0.1.0";
+  BackboneModelComposite.VERSION = "1.0.0";
 
-  return BMC;
+  return BackboneModelComposite;
 
 }));
