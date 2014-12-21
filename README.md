@@ -55,23 +55,11 @@ var TopModel = Backbone.ModelComposite.extend({
   }
 });
 
-var model = new TopModel({
-  secondary: {
-    tertiary: {
-      m: -1, 
-      n: -2, 
-      o: -3
-    },
-    x: 9,
-    y: 10,
-    z: 11
-  },
-  a: 1,
-  b: 2,
-  c: 3
-});
+var model = new TopModel({first: 1});
+model.secondary.set("second", 2);
+model.secondary.tertiary.set("third", 3);
 
-model.toJSON(); // <-- {a:1,b:2,c:3,"secondary":{x:9,y:10,z:11,"tertiary":{m:-1,n:-2,o:-3}}}
+model.toJSON(); // <-- {first: 1, secondary: {second: 2, tertiary: {third :3}}}
 ```
 
 The parent object also emits its children's events, prefixed with the key from the `childModels` hash.
