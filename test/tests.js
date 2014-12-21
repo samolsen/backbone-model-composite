@@ -8,6 +8,7 @@ var BMC = Backbone.ModelComposite.extend({
   }
 });
 
+
 var attrs0, attrs1, attrs2;
 
 QUnit.testStart(function(details) {
@@ -93,3 +94,4 @@ QUnit.test('Backbone.ModelComposite child models are included in the toJSON repr
   });
   assert.equal(json.nested, undefined, 'unless options.excludeChildModels is passed');
 });
+

@@ -34,6 +34,39 @@ By default, attributes used to create child models are removed from the parent o
     model.toJSON(); // <-- {firstChild: {a: 'abc', b: 2}, secondChild: {hello: 'world'}, x: 3}    
     model.toJSON({excludeChildModels: true}); // <-- {x: 3}    
 
+Multiple levels of nesting are supported:
+
+    var SecondaryModel = Backbone.ModelComposite.extend({
+      childModels: {
+        tertiary: Backbone.Model
+      }
+    });
+    
+    var TopModel = Backbone.ModelComposite.extend({
+      childModels: {
+        secondary: SecondaryModel 
+      }
+    });
+    
+    var model = new TopModel({
+      secondary: {
+        tertiary: {
+          m: -1, 
+          n: -2, 
+          o: -3
+        },
+        x: 9,
+        y: 10,
+        z: 11
+      },
+      a: 1,
+      b: 2,
+      c: 3
+    });
+    
+    model.toJSON(); // <-- {a:1,b:2,c:3,"secondary":{x:9,y:10,z:11,"tertiary":{m:-1,n:-2,o:-3}}}
+
+
 The parent object also emits its children's events, prefixed with the key from the `childModels` hash.
 
     var model = new ParentModel();
