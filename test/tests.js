@@ -8,21 +8,24 @@ var BMC = Backbone.ModelComposite.extend({
   }
 });
 
-// 
-var attrs0 = {
-  a: 1,
-  b: "2",
-  c: false
-};
-var attrs1 = {
-  x: 3,
-  y: "Boom!",
-  nested: _.clone(attrs0)
-};
-var attrs2 = {
-  nested: _.clone(attrs0),
-  nested1: _.clone(attrs1)
-};
+var attrs0, attrs1, attrs2;
+
+QUnit.testStart(function(details) {
+  attrs0 = {
+    a: 1,
+    b: "2",
+    c: false
+  };
+  attrs1 = {
+    x: 3,
+    y: "Boom!",
+    nested: _.clone(attrs0)
+  };
+  attrs2 = {
+    nested: _.clone(attrs0),
+    nested1: _.clone(attrs1)
+  };
+});
 
 
 QUnit.test('Backbone.ModelComposite constructor returns an object', function(assert) {
@@ -63,7 +66,7 @@ QUnit.test('Backbone.ModelComposite child attributes', function(assert) {
   });
   assert.ok(model.has(key), 'are preserved when options.preserveChildAttributes == true');
 
-  assert.propEqual(attrs1, model.toJSON(), 'are used to instantiate the child')
+  assert.propEqual(attrs1, model.attributes, 'are used to instantiate the child')
 });
 
 QUnit.test('Backbone.ModelComposite child model event propagation', function(assert) {
@@ -77,4 +80,16 @@ QUnit.test('Backbone.ModelComposite child model event propagation', function(ass
   });
 
   nested.set('a', 123);
+});
+
+QUnit.test('Backbone.ModelComposite child models are included in the toJSON representation', function(assert) {
+  var model = new BMC(attrs2);
+
+  var json = model.toJSON();
+  assert.propEqual(json.nested, model.nested.toJSON());
+
+  json = model.toJSON({
+    excludeChildModels: true
+  });
+  assert.equal(json.nested, undefined, 'unless options.excludeChildModels is passed');
 });

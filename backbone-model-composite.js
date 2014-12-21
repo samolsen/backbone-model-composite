@@ -35,11 +35,27 @@
     },
 
     childModels: {},
+    
+    toJSON: function (options) {
+      options = options || {};
+      var json = Backbone.Model.prototype.toJSON.apply(this, arguments);
+      
+      if (!options.excludeChildModels) {
+        var childModelsHash = _.result(this, 'childModels');
+        var keys = _.keys(childModelsHash);
+      
+        _.each(keys, function (key){
+          json[key]= this[key].toJSON(options);
+        }, this);
+      }
+      
+      return json;
+    },
 
     _createChildren: function(options) {
-      var childModels = _.result(this, 'childModels');
+      var childModelsHash = _.result(this, 'childModels');
       
-      _.each(childModels, function(ModelClass, key) {
+      _.each(childModelsHash, function(ModelClass, key) {
         var childModel = new ModelClass(this.attributes[key]);
         this._propagateChildEvents(childModel, key);
         this[key] = childModel;
