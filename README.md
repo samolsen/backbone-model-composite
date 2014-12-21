@@ -23,7 +23,7 @@ var model = new ParentModel({
     a: 'abc',
     b: 2
   },
-  secondChild: {}
+  secondChild: {},
   x: 3
 });
 
