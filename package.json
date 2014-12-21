@@ -5,7 +5,7 @@
   "main": "backbone-model-composite.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/npm/npm.git"
+    "url": "https://github.com/samolsen/backbone-model-composite.git"
   }
   "directories": {
     "test": "test"
