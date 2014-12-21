@@ -1,25 +1,12 @@
 {
   "name": "backbone-model-composite",
   "version": "1.0.0",
-  "authors": [
-    "Sam Olsen <olsensh@gmail.com>"
-  ],
+  "authors": ["Sam Olsen <olsensh@gmail.com>"],
   "description": "A Backbone.Model extension with support for nested models",
-  "moduleType": [
-    "amd"
-  ],
-  "keywords": [
-    "Backbone",
-    "model"
-  ],
+  "moduleType": ["amd", "node"],
+  "keywords": ["Backbone", "model", "nested", "composite"],
   "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
+  "ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"],
   "dependencies": {
     "backbone": "~1.1.2",
     "underscore": "~1.7.0"

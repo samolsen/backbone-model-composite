@@ -3,16 +3,14 @@
   "version": "1.0.0",
   "description": "A class extending Backbone.Model with support for nested models",
   "main": "backbone-model-composite.js",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/npm/npm.git"
+  }
   "directories": {
     "test": "test"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "Backbone",
-    "model"
-  ],
+  "keywords": ["Backbone", "model", "nested", "composite"],
   "author": "Sam Olsen <olsensh@gmail.com>",
   "license": "MIT",
   "devDependencies": {
