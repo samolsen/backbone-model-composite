@@ -19,6 +19,7 @@ bower install backbone-model-composite
 
 ## Use
 
+### Child models
 Define child models using a `childModels` hash.
 
 ```javascript
@@ -31,6 +32,7 @@ var ParentModel = Backbone.ModelComposite.extend({
   //...
 });
 ```
+
 
 Attributes passed to the parent model's constructor, with keys from `childModels` are used to instantiate its child models.
 
@@ -50,12 +52,16 @@ model.secondChild.set('hello', 'world');
 
 By default, attributes used to create child models are removed from the parent object. Pass `preserveChildAttributes` in the constructor's options hash to keep these attributes on the parent.
 
+### toJson()
+
 `Backbone.Model`'s `toJSON()` method is overriden to include the nested models. Pass `excludeChildModels` in an options hash to prevent this behavior.
 
 ```javascript
 model.toJSON(); // <-- {firstChild: {a: 'abc', b: 2}, secondChild: {hello: 'world'}, x: 3}    
 model.toJSON({excludeChildModels: true}); // <-- {x: 3}    
 ```
+
+### Nesting
 
 Multiple levels of nesting are supported:
 
@@ -78,6 +84,8 @@ model.secondary.tertiary.set("third", 3);
 
 model.toJSON(); // <-- {first: 1, secondary: {second: 2, tertiary: {third :3}}}
 ```
+
+### Event propagation
 
 The parent object also emits its children's events, prefixed with the key from the `childModels` hash.
 
