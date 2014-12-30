@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Backbone-model-composite by samolsen</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Backbone-model-composite</h1>
+        <p>A class extending Backbone.Model with support for nested models</p>
+
+        <p class="view"><a href="https://github.com/samolsen/backbone-model-composite">View the Project on GitHub <small>samolsen/backbone-model-composite</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/samolsen/backbone-model-composite/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/samolsen/backbone-model-composite/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/samolsen/backbone-model-composite">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p><a href="https://npmjs.org/package/backbone-model-composite"><img src="https://badge.fury.io/js/backbone-model-composite.png" alt="NPM version"></a> <a href="http://travis-ci.org/samolsen/backbone-model-composite"><img src="https://secure.travis-ci.org/samolsen/backbone-model-composite.png?branch=master" alt="Build Status"></a></p>
+
+<h1>
+<a id="backbone-model-composite" class="anchor" href="#backbone-model-composite" aria-hidden="true"><span class="octicon octicon-link"></span></a>Backbone Model Composite</h1>
+
+<p>This library is a small extension to the basic <a href="http://backbonejs.org/">Backbone</a> Model class, which supports nested models.</p>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<p>As a Node package</p>
+
+<pre><code>npm install backbone-model-composite
+</code></pre>
+
+<p>With Bower</p>
+
+<pre><code>bower install backbone-model-composite
+</code></pre>
+
+<h2>
+<a id="use" class="anchor" href="#use" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use</h2>
+
+<h3>
+<a id="child-models" class="anchor" href="#child-models" aria-hidden="true"><span class="octicon octicon-link"></span></a>Child models</h3>
+
+<p>Define child models using a <code>childModels</code> hash.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> ParentModel <span class="pl-k">=</span> Backbone.ModelComposite.extend({
+  childModels<span class="pl-k">:</span> {
+    firstChild<span class="pl-k">:</span> Backbone.Model,
+    secondChild<span class="pl-k">:</span> OtherConstructor
+  }
+
+  <span class="pl-c">//...</span>
+});</pre></div>
+
+<p>Attributes passed to the parent model's constructor, with keys from <code>childModels</code> are used to instantiate its child models.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> model <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">ParentModel</span>({
+  firstChild<span class="pl-k">:</span> {
+    a<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>abc<span class="pl-pds">'</span></span>,
+    b<span class="pl-k">:</span> <span class="pl-c1">2</span>
+  },
+  secondChild<span class="pl-k">:</span> {},
+  x<span class="pl-k">:</span> <span class="pl-c1">3</span>
+});
+
+model.<span class="pl-sc">firstChild</span>.get(<span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// &lt;-- 'abc'</span>
+model.secondChild.set(<span class="pl-s1"><span class="pl-pds">'</span>hello<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>world<span class="pl-pds">'</span></span>);</pre></div>
+
+<p>By default, attributes used to create child models are removed from the parent object. Pass <code>preserveChildAttributes</code> in the constructor's options hash to keep these attributes on the parent.</p>
+
+<h3>
+<a id="tojson" class="anchor" href="#tojson" aria-hidden="true"><span class="octicon octicon-link"></span></a>toJson()</h3>
+
+<p><code>Backbone.Model</code>'s <code>toJSON()</code> method is overriden to include the nested models. Pass <code>excludeChildModels</code> in an options hash to prevent this behavior.</p>
+
+<div class="highlight highlight-javascript"><pre>model.toJSON(); <span class="pl-c">// &lt;-- {firstChild: {a: 'abc', b: 2}, secondChild: {hello: 'world'}, x: 3}    </span>
+model.toJSON({excludeChildModels<span class="pl-k">:</span> <span class="pl-c1">true</span>}); <span class="pl-c">// &lt;-- {x: 3}    </span></pre></div>
+
+<h3>
+<a id="nesting" class="anchor" href="#nesting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Nesting</h3>
+
+<p>Multiple levels of nesting are supported:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> SecondaryModel <span class="pl-k">=</span> Backbone.ModelComposite.extend({
+  childModels<span class="pl-k">:</span> {
+    tertiary<span class="pl-k">:</span> Backbone.Model
+  }
+});
+
+<span class="pl-s">var</span> TopModel <span class="pl-k">=</span> Backbone.ModelComposite.extend({
+  childModels<span class="pl-k">:</span> {
+    secondary<span class="pl-k">:</span> SecondaryModel 
+  }
+});
+
+<span class="pl-s">var</span> model <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">TopModel</span>({first<span class="pl-k">:</span> <span class="pl-c1">1</span>});
+model.secondary.set(<span class="pl-s1"><span class="pl-pds">"</span>second<span class="pl-pds">"</span></span>, <span class="pl-c1">2</span>);
+model.secondary.tertiary.set(<span class="pl-s1"><span class="pl-pds">"</span>third<span class="pl-pds">"</span></span>, <span class="pl-c1">3</span>);
+
+model.toJSON(); <span class="pl-c">// &lt;-- {first: 1, secondary: {second: 2, tertiary: {third :3}}}</span></pre></div>
+
+<h3>
+<a id="event-propagation" class="anchor" href="#event-propagation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Event propagation</h3>
+
+<p>The parent object also emits its children's events, prefixed with the key from the <code>childModels</code> hash.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> model <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">ParentModel</span>();
+<span class="pl-s">var</span> <span class="pl-en">handler</span> <span class="pl-k">=</span> <span class="pl-st">function</span> (){};
+model.on(<span class="pl-s1"><span class="pl-pds">'</span>firstChild:change<span class="pl-pds">'</span></span>, handler);
+model.<span class="pl-sc">firstChild</span>.set(<span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-c1">123</span>); <span class="pl-c">// handler called</span></pre></div>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/samolsen">samolsen</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
