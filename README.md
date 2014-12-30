@@ -1,4 +1,7 @@
+[![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
+
 # Backbone Model Composite
+
 
 This library is a small extension to the basic [Backbone](http://backbonejs.org/) Model class, which supports nested models.
 
@@ -70,3 +73,10 @@ var handler = function (){};
 model.on('firstChild:change', handler);
 model.firstChild.set('a', 123); // handler called
 ```
+
+
+[npm-url]: https://npmjs.org/package/backbone-model-composite
+[npm-image]: https://badge.fury.io/js/backbone-model-composite.png
+
+[travis-url]: http://travis-ci.org/samolsen/backbone-model-composite
+[travis-image]: https://secure.travis-ci.org/samolsen/backbone-model-composite.png?branch=master
