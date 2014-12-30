@@ -139,7 +139,7 @@
 
   });
 
-  BackboneModelComposite.VERSION = "1.0.0";
+  BackboneModelComposite.VERSION = "1.0.2";
 
   return BackboneModelComposite;
 

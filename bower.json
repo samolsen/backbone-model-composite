@@ -1,6 +1,6 @@
 {
   "name": "backbone-model-composite",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "authors": ["Sam Olsen <sam@samolsen.com>"],
   "description": "A Backbone.Model extension with support for nested models",
   "moduleType": ["amd", "node"],
