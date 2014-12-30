@@ -16,7 +16,7 @@
     "nested",
     "composite"
   ],
-  "author": "Sam Olsen <olsensh@gmail.com>",
+  "author": "Sam Olsen <sam@samolsen.com>",
   "license": "MIT",
   "devDependencies": {
     "chai": "^1.10.0",

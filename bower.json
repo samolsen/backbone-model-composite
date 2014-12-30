@@ -1,7 +1,7 @@
 {
   "name": "backbone-model-composite",
-  "version": "1.0.0",
-  "authors": ["Sam Olsen <olsensh@gmail.com>"],
+  "version": "1.0.1",
+  "authors": ["Sam Olsen <sam@samolsen.com>"],
   "description": "A Backbone.Model extension with support for nested models",
   "moduleType": ["amd", "node"],
   "keywords": ["Backbone", "model", "nested", "composite"],
@@ -11,7 +11,8 @@
     "backbone": "~1.1.2",
     "underscore": "~1.7.0"
   },
-  "devDependencies": {
-    "qunit": "~1.16.0"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samolsen/backbone-model-composite.git"
   }
 }

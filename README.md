@@ -5,6 +5,20 @@
 
 This library is a small extension to the basic [Backbone](http://backbonejs.org/) Model class, which supports nested models.
 
+## Install
+
+As a Node package
+```
+npm install backbone-model-composite
+```
+
+With Bower
+```
+bower install backbone-model-composite
+```
+
+## Use
+
 Define child models using a `childModels` hash.
 
 ```javascript
