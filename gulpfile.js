@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var rename = require("gulp-rename");
+var docco = require("gulp-docco");
 
 gulp.task('compress', function() {
   gulp.src('backbone-model-composite.js')
@@ -9,4 +10,10 @@ gulp.task('compress', function() {
     .pipe(gulp.dest("./"))
 });
 
-gulp.task('default', ['compress']);
+gulp.task('docs', function () {
+  return gulp.src('./backbone-model-composite.js')
+    .pipe(docco())
+    .pipe(gulp.dest('./docs'))
+});
+
+gulp.task('default', ['compress', 'docs']);

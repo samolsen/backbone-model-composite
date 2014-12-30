@@ -1,6 +1,8 @@
 ((function(root, factory) {
 
-  // Set up Backbone.ModelComposite appropriately for the environment. Start with AMD.
+  // Set up Backbone.ModelComposite appropriately for the environment. 
+  
+  //Start with AMD.
   if (typeof define === 'function' && define.amd) {
     define(['underscore', 'backbone'], function(_, Backbone) {
       // Export global even in AMD case in case this script is loaded with
@@ -34,17 +36,17 @@
     // which has keys defining the how the child model is referenced on
     // the parent instance, and values which are the child instance constructors.
     //
-    // At a minimum, child instances should implement the Backbone.Events API.
+    // At a minimum, child instances should implement the `Backbone.Events` API
+    // and `toJSON()`.
     //
     // e.g.
-    // 
+    //
+    // ```
     // var ParentModel = Backbone.ModelComposite.extend({
     //   childModels: {
     //     firstChild: Backbone.Model,
     //     secondChild: OtherConstructor
     //   }
-    //   
-    //   //...
     // });
     //
     // var model = new ParentModel({
@@ -59,6 +61,7 @@
     // model.firstChild.get('a'); // <-- 'abc'
     // model.secondChild.set('hello', 'world');
     // model.toJSON(); // <-- {firstChild: {a: 'abc', b: 2}, secondChild: {hello: 'world'}, x: 3, ...}
+    // ```
     //
     childModels: {},
 
@@ -87,8 +90,8 @@
       return json;
     },
 
-    // Create child models, attaching the child to this[key], using 
-    // the key from the childModels hash. That key is also used pass 
+    // Create child models, attaching the child to `this[key]`, using 
+    // the key from the `childModels` hash. That key is also used pass 
     // attributes from the parent attributes to the child's constructor.
     // 
     // By default, the child attributes are removed from the parent's
@@ -112,9 +115,10 @@
 
     // All child events are also broadcast by the parent object. 
     // Listeners may be attached to the parent, prefixing 
-    // the event with the child's key from the childModels result
+    // the event with the child's key from the `childModels` result
     // hash.
     //    
+    // ```
     // var ParentModel = Backbone.ModelComposite.extend({
     //   childModels: {
     //     firstChild: Backbone.Model
@@ -125,6 +129,7 @@
     // var handler = function (){};
     // model.on('firstChild:change', handler);
     // model.firstChild.set('a', 123); // handler called
+    // ```
     //
     _propagateChildEvents: function(childModel, key) {
       this.listenTo(childModel, 'all', function() {
