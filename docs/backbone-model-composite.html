@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>backbone-model-composite.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>backbone-model-composite.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>((<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(root, factory)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Set up Backbone.ModelComposite appropriately for the environment. </p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Start with AMD.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {
+    define([<span class="hljs-string">'underscore'</span>, <span class="hljs-string">'backbone'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(_, Backbone)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Export global even in AMD case in case this script is loaded with
+others that may still expect a global Backbone.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      Backbone.ModelComposite = factory(root, _, Backbone);
+
+      <span class="hljs-keyword">return</span> Backbone.ModelComposite;
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Next for Node.js or CommonJS. jQuery may not be needed as a module.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> exports !== <span class="hljs-string">'undefined'</span>) {
+    <span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'underscore'</span>);
+    <span class="hljs-keyword">var</span> Backbone = <span class="hljs-built_in">require</span>(<span class="hljs-string">'backbone'</span>);
+
+    exports = Backbone.ModelComposite = factory(root, _, Backbone);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Finally, as a browser global.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  } <span class="hljs-keyword">else</span> {
+    root.Backbone.ModelComposite = factory(root, root._, root.Backbone);
+  }
+
+})(<span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(root, _, Backbone)</span> </span>{
+
+  <span class="hljs-keyword">var</span> slice = <span class="hljs-built_in">Array</span>.prototype.slice;
+
+  <span class="hljs-keyword">var</span> BackboneModelComposite = Backbone.Model.extend({</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Subclasses define child models using a <code>childModels</code> hash.</p>
+<p>This may be either an object or function returning an object,
+which has keys defining the how the child model is referenced on
+the parent instance, and values which are the child instance constructors.</p>
+<p>At a minimum, child instances should implement the <code>Backbone.Events</code> API
+and <code>toJSON()</code>.</p>
+<p>e.g.</p>
+<pre><code><span class="hljs-keyword">var</span> ParentModel = Backbone.ModelComposite.extend({
+  childModels: {
+    firstChild: Backbone.Model,
+    secondChild: OtherConstructor
+  }
+});
+
+<span class="hljs-keyword">var</span> model = <span class="hljs-keyword">new</span> ParentModel({
+  firstChild: {
+    a: <span class="hljs-string">'abc'</span>,
+    b: <span class="hljs-number">2</span>
+  },
+  secondChild: {}
+  x: <span class="hljs-number">3</span> <span class="hljs-comment">//, ...</span>
+});
+
+model.firstChild.get(<span class="hljs-string">'a'</span>); <span class="hljs-comment">// &lt;-- 'abc'</span>
+model.secondChild.set(<span class="hljs-string">'hello'</span>, <span class="hljs-string">'world'</span>);
+model.toJSON(); <span class="hljs-comment">// &lt;-- {firstChild: {a: 'abc', b: 2}, secondChild: {hello: 'world'}, x: 3, ...}</span>
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    childModels: {},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Override the constructor, creating child models</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    constructor: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(attrs, options)</span> </span>{
+      Backbone.Model.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+      <span class="hljs-keyword">this</span>._createChildren(options);
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Include child models in this model’s JSON representation. 
+Child models may be omitted by passing a truthy value to 
+<code>excludeChildModels</code> in the options argument</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    toJSON: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span> </span>{
+      options = options || {};
+      <span class="hljs-keyword">var</span> json = Backbone.Model.prototype.toJSON.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+
+      <span class="hljs-keyword">if</span> (!options.excludeChildModels) {
+        <span class="hljs-keyword">var</span> childModelsHash = _.result(<span class="hljs-keyword">this</span>, <span class="hljs-string">'childModels'</span>);
+        <span class="hljs-keyword">var</span> keys = _.keys(childModelsHash);
+
+        _.each(keys, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(key)</span> </span>{
+          json[key] = <span class="hljs-keyword">this</span>[key].toJSON(options);
+        }, <span class="hljs-keyword">this</span>);
+      }
+
+      <span class="hljs-keyword">return</span> json;
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Create child models, attaching the child to <code>this[key]</code>, using 
+the key from the <code>childModels</code> hash. That key is also used pass 
+attributes from the parent attributes to the child’s constructor.</p>
+<p>By default, the child attributes are removed from the parent’s
+attributes hash. This behavior can be prevented by passing 
+a truthy value for <code>preserveChildAttributes</code> to the parent’s 
+options argument.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    _createChildren: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span> </span>{
+      options = options || {};
+      <span class="hljs-keyword">var</span> childModelsHash = _.result(<span class="hljs-keyword">this</span>, <span class="hljs-string">'childModels'</span>);
+
+      _.each(childModelsHash, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(ModelClass, key)</span> </span>{
+        <span class="hljs-keyword">var</span> childModel = <span class="hljs-keyword">new</span> ModelClass(<span class="hljs-keyword">this</span>.get(key));
+        <span class="hljs-keyword">this</span>._propagateChildEvents(childModel, key);
+        <span class="hljs-keyword">this</span>[key] = childModel;
+
+        <span class="hljs-keyword">if</span> (!options.preserveChildAttributes) {
+          <span class="hljs-keyword">this</span>.unset(key);
+        }
+      }, <span class="hljs-keyword">this</span>);
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>All child events are also broadcast by the parent object. 
+Listeners may be attached to the parent, prefixing 
+the event with the child’s key from the <code>childModels</code> result
+hash.</p>
+<pre><code><span class="hljs-keyword">var</span> ParentModel = Backbone.ModelComposite.extend({
+  childModels: {
+    firstChild: Backbone.Model
+  }
+});
+
+<span class="hljs-keyword">var</span> model = <span class="hljs-keyword">new</span> ParentModel();
+<span class="hljs-keyword">var</span> handler = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span></span>{};
+model.on(<span class="hljs-string">'firstChild:change'</span>, handler);
+model.firstChild.set(<span class="hljs-string">'a'</span>, <span class="hljs-number">123</span>); <span class="hljs-comment">// handler called</span>
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    _propagateChildEvents: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(childModel, key)</span> </span>{
+      <span class="hljs-keyword">this</span>.listenTo(childModel, <span class="hljs-string">'all'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">var</span> model = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">var</span> args = slice.apply(<span class="hljs-built_in">arguments</span>);
+        <span class="hljs-keyword">var</span> event = args[<span class="hljs-number">0</span>];
+        args[<span class="hljs-number">0</span>] = key + <span class="hljs-string">":"</span> + event;
+
+        <span class="hljs-keyword">this</span>.trigger.apply(<span class="hljs-keyword">this</span>, args);
+      });
+    }
+
+  });
+
+  BackboneModelComposite.VERSION = <span class="hljs-string">"1.0.2"</span>;
+
+  <span class="hljs-keyword">return</span> BackboneModelComposite;
+
+}));</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

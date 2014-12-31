@@ -1,0 +1,37 @@
+{
+  "name": "backbone-model-composite",
+  "version": "1.0.2",
+  "description": "A class extending Backbone.Model with support for nested models",
+  "main": "backbone-model-composite.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samolsen/backbone-model-composite.git"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [
+    "Backbone",
+    "model",
+    "nested",
+    "composite"
+  ],
+  "author": "Sam Olsen <sam@samolsen.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "gulp": "^3.8.10",
+    "gulp-docco": "0.0.4",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.0.2",
+    "mocha": "^2.1.0"
+  },
+  "dependencies": {
+    "backbone": "^1.1.2",
+    "underscore": "^1.7.0"
+  },
+  "scripts": {
+    "prepublish": "gulp",
+    "test": "mocha"
+  }
+}
