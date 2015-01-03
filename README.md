@@ -96,6 +96,9 @@ model.on('firstChild:change', handler);
 model.firstChild.set('a', 123); // handler called
 ```
 
+## License
+
+[MIT License](http://en.wikipedia.org/wiki/MIT_License)
 
 [npm-url]: https://npmjs.org/package/backbone-model-composite
 [npm-image]: https://badge.fury.io/js/backbone-model-composite.png
