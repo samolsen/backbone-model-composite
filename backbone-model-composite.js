@@ -1,7 +1,7 @@
 ((function(root, factory) {
 
-  // Set up Backbone.ModelComposite appropriately for the environment. 
-  
+  // Set up Backbone.ModelComposite appropriately for the environment.
+
   //Start with AMD.
   if (typeof define === 'function' && define.amd) {
     define(['underscore', 'backbone'], function(_, Backbone) {
@@ -31,7 +31,7 @@
   var BackboneModelComposite = Backbone.Model.extend({
 
     // Subclasses define child models using a `childModels` hash.
-    // 
+    //
     // This may be either an object or function returning an object,
     // which has keys defining the how the child model is referenced on
     // the parent instance, and values which are the child instance constructors.
@@ -71,8 +71,29 @@
       this._createChildren(options);
     },
 
-    // Include child models in this model's JSON representation. 
-    // Child models may be omitted by passing a truthy value to 
+
+    set: function(key, val, options) {
+      Backbone.Model.prototype.set.apply( this, arguments );
+      // Handle both `"key", value` and `{key: value}` -style arguments.
+      var attrs;
+      if( typeof key === 'object' ) {
+        attrs = key;
+        options = val;
+      }
+      else {
+        (attrs = {})[key] = val;
+      }
+
+      if( !options || !options.excludeChildModels ) {
+         _.each(_.keys(_.result(this, 'childModels')), function(key) {
+          attrs[key] && this[key].set( attrs[key], options )
+        }, this );
+      }
+      return this
+    },
+
+    // Include child models in this model's JSON representation.
+    // Child models may be omitted by passing a truthy value to
     // `excludeChildModels` in the options argument
     toJSON: function(options) {
       options = options || {};
@@ -90,13 +111,13 @@
       return json;
     },
 
-    // Create child models, attaching the child to `this[key]`, using 
-    // the key from the `childModels` hash. That key is also used pass 
+    // Create child models, attaching the child to `this[key]`, using
+    // the key from the `childModels` hash. That key is also used pass
     // attributes from the parent attributes to the child's constructor.
-    // 
+    //
     // By default, the child attributes are removed from the parent's
-    // attributes hash. This behavior can be prevented by passing 
-    // a truthy value for `preserveChildAttributes` to the parent's 
+    // attributes hash. This behavior can be prevented by passing
+    // a truthy value for `preserveChildAttributes` to the parent's
     // options argument.
     _createChildren: function(options) {
       options = options || {};
@@ -113,11 +134,11 @@
       }, this);
     },
 
-    // All child events are also broadcast by the parent object. 
-    // Listeners may be attached to the parent, prefixing 
+    // All child events are also broadcast by the parent object.
+    // Listeners may be attached to the parent, prefixing
     // the event with the child's key from the `childModels` result
     // hash.
-    //    
+    //
     // ```
     // var ParentModel = Backbone.ModelComposite.extend({
     //   childModels: {
